@@ -373,6 +373,8 @@ case "$bytecc,$target" in
   *,powerpc-*-aix*)
     # Avoid name-space pollution by requiring Unix98-conformant includes
     bytecccompopts="$bytecccompopts -D_XOPEN_SOURCE=500";;
+  *,*-*-solaris*)
+    bytecccompopts="$bytecccompopts -D_XOPEN_SOURCE=600";;
   *,*-*-cygwin*)
     case $target in
       i686-*) flavor=cygwin;;
@@ -422,12 +424,14 @@ case "$bytecc,$target" in
     TOOLCHAIN="mingw"
     SO="dll"
     ;;
+
   *,x86_64-*-linux*)
     # Tell gcc that we can use 32-bit code addresses for threaded code
     # unless we are compiled for a shared library (-fPIC option)
     echo "#ifndef __PIC__" >> m.h
     echo "#  define ARCH_CODE32" >> m.h
     echo "#endif" >> m.h;;
+
 esac
 
 # Configure compiler to use in further tests.
@@ -779,6 +783,7 @@ if test $with_sharedlibs = "yes"; then
     arm*-*-linux*)                natdynlink=true;;
     arm*-*-freebsd*)              natdynlink=true;;
     aarch64-*-linux*)             natdynlink=true;;
+    x86_64-*-solaris2*)           natdynlink=true;;
   esac
 fi
 
@@ -794,7 +799,6 @@ fi
 arch=none
 model=default
 system=unknown
-
 case "$target" in
   sparc*-*-solaris2.*)          arch=sparc; system=solaris;;
   sparc*-*-*bsd*)               arch=sparc; system=bsd;;
@@ -845,6 +849,7 @@ case "$target" in
   x86_64-*-mingw*)              arch=amd64; system=mingw;;
   aarch64-*-linux*)             arch=arm64; system=linux;;
   x86_64-*-cygwin*)             arch=amd64; system=cygwin;;
+  x86_64-*-solaris*)            arch=amd64; system=solaris;;
 esac
 
 # Some platforms exist both in 32-bit and 64-bit variants, not distinguished
